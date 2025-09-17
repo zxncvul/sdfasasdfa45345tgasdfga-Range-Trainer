@@ -1,0 +1,980 @@
+[
+  {
+    "id": 1,
+    "label": "UTG – OR – KX Swited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "K",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 2,
+    "label": "UTG – OR – QX Swited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "Q",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 3,
+    "label": "UTG – OR – JX Swited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "J",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 4,
+    "label": "UTG – OR – TX Swited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "T",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 5,
+    "label": "UTG – OR – 9X Swited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "9",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 6,
+    "label": "UTG – OR – Conectores Swited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "SUITED",
+      "CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 7,
+    "label": "UTG – OR – Parejas",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "NO_CONNECTORS",
+      "PAIR"
+    ]
+  },
+  {
+    "id": 8,
+    "label": "UTG – OR – Conectores Offswited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "OFFSUITED",
+      "CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 9,
+    "label": "UTG – OR – AX Offswited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "A",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 10,
+    "label": "UTG – OR – KX Offswited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "K",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 11,
+    "label": "UTG – OR – QX Offswited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "Q",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 12,
+    "label": "UTG – OR – JX Offswited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "J",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 13,
+    "label": "UTG – OR – TX Offswited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "T",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 14,
+    "label": "UTG – OR – 9X Offswited",
+    "tags": [
+      "UTG",
+      "OR",
+      "BET",
+      "9",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 15,
+    "label": "CO – OR – Conectores Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "SUITED",
+      "CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 16,
+    "label": "CO – OR – KX Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "K",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 17,
+    "label": "CO – OR – QX Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "Q",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 18,
+    "label": "CO – OR – JX Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "J",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 19,
+    "label": "CO – OR – TX Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "T",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 20,
+    "label": "CO – OR – 9X Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "9",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 21,
+    "label": "CO – OR – 8X Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "8",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 22,
+    "label": "CO – OR – 7X Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "7",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 23,
+    "label": "CO – OR – 6X Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "6",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 24,
+    "label": "CO – OR – 5X Swited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "5",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 25,
+    "label": "CO – OR – 9X Offswited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "9",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 26,
+    "label": "CO – OR – TX Offswited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "T",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 27,
+    "label": "CO – OR – JX Offswited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "J",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 28,
+    "label": "CO – OR – QX Offswited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "Q",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 29,
+    "label": "SB – OR – QX Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "Q",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 30,
+    "label": "SB – OR – JX Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "J",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 31,
+    "label": "SB – OR – TX Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "T",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 32,
+    "label": "SB – OR – 9X Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "9",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 33,
+    "label": "SB – OR – 8X Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "8",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 34,
+    "label": "SB – OR – 7X Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "7",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 35,
+    "label": "SB – OR – 6X Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "6",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 36,
+    "label": "SB – OR – 5X Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "5",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 37,
+    "label": "SB – OR – Conectores Offswited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "OFFSUITED",
+      "CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 38,
+    "label": "SB – OR – AX Offswited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "A",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 39,
+    "label": "SB – OR – KX Offswited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "K",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 40,
+    "label": "SB – OR – QX Offswited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "Q",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 41,
+    "label": "SB – OR – JX Offswited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "J",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 42,
+    "label": "SB – OR – TX Offswited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "T",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 43,
+    "label": "SB – OR – 9X Offswited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "9",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 44,
+    "label": "SB – OR – 8X Offswited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "8",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 45,
+    "label": "BTN – OR – QX Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "Q",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 46,
+    "label": "BTN – OR – JX Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "J",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 47,
+    "label": "BTN – OR – TX Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "T",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 48,
+    "label": "BTN – OR – 9X Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "9",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 49,
+    "label": "BTN – OR – 8X Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "8",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 50,
+    "label": "BTN – OR – 7X Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "7",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 51,
+    "label": "BTN – OR – 6X Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "6",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 52,
+    "label": "BTN – OR – 5X Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "5",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 53,
+    "label": "BTN – OR – 4X Swited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "4",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 54,
+    "label": "BTN – OR – KX Offswited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "K",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 55,
+    "label": "BTN – OR – QX Offswited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "Q",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 56,
+    "label": "BTN – OR – JX Offswited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "J",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 57,
+    "label": "BTN – OR – TX Offswited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "T",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 58,
+    "label": "BTN – OR – 9X Offswited",
+    "tags": [
+      "BTN",
+      "OR",
+      "BET",
+      "9",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 59,
+    "label": "CO – OR – AX Offswited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "A",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 60,
+    "label": "CO – OR – KX Offswited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "K",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 61,
+    "label": "CO – OR – Conectores Offswited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "OFFSUITED",
+      "CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 62,
+    "label": "CO – OR – PAREJAS Offswited",
+    "tags": [
+      "CO",
+      "OR",
+      "BET",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 63,
+    "label": "MP – OR – 9X Offswited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "9",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 64,
+    "label": "MP – OR – AX Swited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "A",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 65,
+    "label": "MP – OR – KX Swited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "K",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 66,
+    "label": "MP – OR – QX Swited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "Q",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 67,
+    "label": "MP – OR – 9X Swited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "9",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 68,
+    "label": "MP – OR – Parejas",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "NO_CONNECTORS",
+      "PAIR"
+    ]
+  },
+  {
+    "id": 69,
+    "label": "MP – OR – AX Offswited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "A",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 70,
+    "label": "MP – OR – QX Offswited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "Q",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 71,
+    "label": "MP – OR – JX Offswited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "J",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 72,
+    "label": "MP – OR – TX Offswited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "T",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 73,
+    "label": "MP – OR – JX Swited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "J",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 74,
+    "label": "MP – OR – TX Swited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "T",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 75,
+    "label": "MP – OR – KX Offswited",
+    "tags": [
+      "MP",
+      "OR",
+      "BET",
+      "K",
+      "OFFSUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  },
+  {
+    "id": 76,
+    "label": "SB – OR – 4X Swited",
+    "tags": [
+      "SB",
+      "OR",
+      "BET",
+      "4",
+      "SUITED",
+      "NO_CONNECTORS",
+      "NO_PAIR"
+    ]
+  }
+]

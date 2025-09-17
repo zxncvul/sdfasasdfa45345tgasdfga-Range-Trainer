@@ -1,0 +1,551 @@
+/* ==========================================================================
+   1) Variables globales (tema terminal verde)
+   ========================================================================== */
+:root {
+  --color-bg: #000;
+  --color-bg-alt: #0a0a0a;
+
+  --color-green: #28a745;
+  --color-green-light: #29a847fa;
+  --color-green-dark: #1e4620;
+  --color-red: #c00;
+
+  --green-0: #000000;
+  --green-1: #00aa33;
+  --green-2: #00ff55;
+  --green-3: #55ff88;
+
+  --red-1:   #c00;
+  --red-2:   #ff3333;
+  --yellow-1:#ffc107;
+  --yellow-2:#ffc20c;
+  --blue-1:  #0b1330;
+  --blue-2:  #3399ff;
+
+  --gap: 8px;
+  --grid-width: 545px;
+  --cell: 40px;
+  --radius: 6px;
+
+  --btn-h: 32px;
+  --btn-fs: 13px;
+
+  --font: 'JetBrains Mono', monospace;
+  --font7: 'DSEG7 Classic', monospace;
+
+  /* Paleta de movimientos (preflop) */
+  --move-fold:      #444444;
+  --move-limp:      #444444;
+  --move-overlimp:  #444444;
+  --move-call:      #3daee9;
+  --move-bet:       #ffb300;
+  --move-or:        #28a745;
+  --move-rol:       #00c853;
+  --move-3bet:      #ff7043;
+  --move-squeeze:   #d500f9;
+  --move-4bet:      #f50057;
+  --move-5betplus:  #c62828;
+  --move-allin:     #000000;
+}
+
+/* ==========================================================================
+   2) Reset y base
+   ========================================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  background: var(--color-bg);
+  color: #fff;
+  font-family: var(--font);
+  line-height: 1.35;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+button {
+  appearance: none;
+  border: none;
+  background: #000;
+  color: var(--green-2);
+  font-family: var(--font);
+  font-size: 12px;
+  padding: 2px 8px;
+  cursor: pointer;
+  min-height: 40 px;
+}
+button:hover { background:#06190c; }
+button.disabled, button:disabled { opacity:.45; cursor:default; }
+.hidden { display:none !important; }
+.notranslate { translate: no; }
+
+/* -----------------------------------------------------------------------
+   * Estados universales para los botones de control.
+   * Se aplican a los botones .control-btn (posiciones, filtros, etc.)
+   * para reflejar la filosofía de estados definida en el enunciado:
+   * - .active    → seleccionado (verde actual)
+   * - .off       → habilitado no seleccionado (rojo)
+   * - .disabled  → deshabilitado (verde oscuro)
+   * El fondo permanece negro y sin bordes para controles regulares.
+   */
+  .control-btn.off {
+    background: #000;
+    border: none;
+    /*
+     * Para que los estados de habilitado (rojo) y deshabilitado (verde oscuro)
+     * prevalezcan sobre las reglas por defecto de .control-btn más adelante
+     * en el CSS, usamos !important en el color. De este modo evitamos que
+     * otras reglas definan un color diferente y mantenemos el esquema
+     * descrito en el enunciado: rojo para habilitado no seleccionado.
+     */
+    /* Texto rojo para botones habilitados pero no seleccionados */
+    color: var(--red-2) !important;
+  }
+  .control-btn.disabled,
+  .control-btn:disabled {
+    background: #000;
+    border: none;
+    /*
+     * Utilizamos !important para que el color verde oscuro tenga prioridad
+     * sobre la definición posterior de .control-btn.disabled en la hoja de
+     * estilos base. También se ajusta el opacity y cursor para estados
+     * deshabilitados.
+     */
+    color: #0f3a20 !important;
+    opacity: .9;
+    cursor: not-allowed;
+  }
+  /* Para acciones no disponibles (borde discontinuo verde) */
+  .action-unavailable {
+    background: #000 !important;
+    border: 1px dashed var(--green-actual, #159733) !important;
+    color: #9fe3b3 !important;
+  }
+
+/* ==========================================================================
+   3) Estructura general
+   ========================================================================== */
+#main { flex:1; }
+#grid-container {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+}
+
+/* ==========================================================================
+   4) Quiz info (barra superior)
+   ========================================================================== */
+/* Grid estable: botón fuente | centro (pregunta/contadores) | ojito */
+#quiz-info {
+  width: var(--grid-width);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 10px;
+  margin-bottom: 4px;
+  padding-top: 6px;   /* baja un poco todo */
+  margin-left: -6px;  /* lo acerca al borde izquierdo */
+}
+#quiz-info > * { min-width: 0; }
+
+/* Botón central: contenedor horizontal de pregunta ⇄ contadores */
+#quiz-toggle {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;  /* pegado al < D.Diaz > */
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+#quiz-toggle:focus { outline: none; }
+
+/* Enunciado */
+#quiz-question {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--green-2);
+  text-align: left;
+  line-height: 1.2;
+}
+
+/* Contadores en la misma línea (ocultos por defecto) */
+#topline-counters {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font7);
+  font-size: 15px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+/* Alternancia controlada por clase en #quiz-toggle */
+#quiz-toggle.show-counters #quiz-question { display: none; }
+#quiz-toggle.show-counters #topline-counters { display: flex; }
+
+/* Números con ancho fijo para evitar “bailes” */
+#combo-total   { min-width: 4ch; text-align: right; }
+#combo-all     { min-width: 3ch; text-align: right; }
+#combo-s,
+#combo-o       { min-width: 2ch; text-align: right; }
+#quiz-counter  { min-width: 7ch; text-align: right; color: var(--yellow-2); }
+
+/* Separadores */
+.label-jet { font-weight: 700; }
+.label-red { color: var(--red-2); }
+#topline-counters .label-jet { margin: 0 6px; }
+
+/* Botón ojito (mostrar/ocultar casillas) */
+#toggle-show-cells {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0px solid var(--green-1);
+  border-radius: 6px;
+  background: #000;
+}
+#toggle-show-cells:focus { outline: none; }
+#toggle-show-cells svg { width: 25px; height: 25px; }
+#toggle-show-cells.on  { border-color: var(--green-2); background: #0a2b15; }
+#toggle-show-cells.off { border-color: var(--red-2);   background: #2b0a0a; }
+
+/* ==========================================================================
+   5) Tabla 13×13
+   ========================================================================== */
+#range-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: var(--color-green);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--color-green);
+  width: var(--grid-width);
+}
+#range-table thead,
+#range-table tbody th { display: none; }
+#range-table tbody tr { height: var(--cell); }
+
+#range-table td {
+  --paint: transparent;
+  width: var(--cell);
+  height: var(--cell);
+  position: relative;
+  font-size: 14px;
+  text-align: center;
+  vertical-align: middle;
+  color: transparent;
+  background: var(--color-bg);
+  border: 1px solid var(--color-green);
+  user-select: none;
+  overflow: hidden;
+  transition: background-color .15s linear;
+  z-index: 1;
+}
+/* Bloque reducido: margen interior negro */
+#range-table td.shrunk::before {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px; right: 3px; bottom: 3px;
+  border-radius: 4px;
+  background: var(--paint);
+  pointer-events: none;
+  z-index: 0;
+}
+#range-table td::after {
+  content: attr(data-label);
+  position: absolute; top:50%; left:50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-bg);
+  visibility: hidden;
+}
+/* Estados legacy */
+#range-table td.highlight { background: #28a7467a !important; }
+#range-table td.highlight::after { visibility: visible; }
+
+#range-table td.locked { background: var(--color-bg) !important; }
+#range-table td.locked::after { color: var(--color-green) !important; visibility: visible; }
+#range-table td.locked.highlight { background: var(--color-green) !important; }
+#range-table td.locked.highlight::after { color: var(--color-bg) !important; }
+
+#range-table td.wrong { background: var(--color-bg) !important; }
+#range-table td.wrong::before {
+  content: "\f54C";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute; top:50%; left:50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-red);
+  font-size: 1.2em;
+}
+
+/* Invert-lock */
+body.invert-lock #range-table td.locked {
+  background: var(--color-green) !important;
+  border-color: var(--color-green) !important;
+}
+body.invert-lock #range-table td.locked::after { color: var(--color-bg) !important; }
+body.invert-lock #range-table td.wrong { background: var(--color-red) !important; }
+body.invert-lock #range-table td.wrong::before { color: var(--color-bg); }
+
+/* ==========================================================================
+   6) Panel de configuración
+   ========================================================================== */
+#config-panel {
+  width: var(--grid-width);
+  display:flex;
+  flex-direction:column;
+  gap: 12px;
+}
+
+/* 6.1 Posiciones: 3 columnas (Héroe | IP/OOP | Villano) */
+.positions-3col {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+}
+
+/* Por defecto, las posiciones de héroe y villano (parte izquierda y derecha) se muestran en rojo
+   cuando están habilitadas pero no seleccionadas. Se sobreescribirá mediante las clases
+   .active, .off y .disabled aplicadas dinámicamente. */
+.positions-3col .control-btn {
+  color: var(--red-2);
+  align-items: start;
+}
+.pos-col .btn-row {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+.pos-center {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 0 10px;
+  border-left:1px dashed #28a745;
+  border-right: 1px dashed #28a745;
+}
+.pos-center .btn-stack {
+  display: grid;
+  grid-auto-rows: var(--btn-h);
+  gap: 8px;
+}
+
+/* ==========================================================================
+   7) Botones base
+   ========================================================================== */
+.control-btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  height: 40px;
+  padding: 4px 10px;
+  min-width: 0;
+  background:#000;
+  color: var(--green-2);
+  border:none;
+  border-radius: 6px;
+  font-size: var(--btn-fs);
+  font-weight: 600;
+  letter-spacing: .3px;
+  cursor: pointer;
+  transition: background-color .2s, color .2s, border-color .2s, opacity .2s;
+}
+.control-btn:focus { outline:1px solid var(--green-3); outline-offset:1px; }
+.control-btn.active {
+  /* Botones seleccionados: fondo negro, texto verde */
+  background: #000 !important;
+  border: none !important;
+  color: var(--green-2) !important;
+}
+.control-btn.disabled,
+.control-btn:disabled {
+  /* Botones deshabilitados: fondo negro, texto verde oscuro */
+  background: #000 !important;
+  border: none !important;
+  color: #0f3a20 !important;
+  opacity: .9;
+  cursor: not-allowed;
+}
+.control-btn.brush-active { border:2px solid var(--yellow-2); }
+
+/* ==========================================================================
+   8) Secciones de botones
+   ========================================================================== */
+.btn-section { width: var(--grid-width); }
+.btn-row { display:flex; gap:6px; flex-wrap:wrap; width:100%; }
+
+/* 8.1 Movimientos: OR vs 3B 5B en una sola línea */
+.move-section .btn-row {
+  display: grid !important;
+  grid-template-columns: 1fr 36px 1fr 1fr; /* OR | vs | 3B | 5B */
+  align-items: center;
+  justify-items: center;
+  gap: 14px;
+  margin: 6px 0 2px;
+}
+.move-section .control-btn {
+  min-width: 110px;
+  height: 40px;
+  font-size: 14px;
+}
+.vs-text {
+  color:#fff;
+  opacity:.9;
+  font-weight:800;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* 8.2 Acciones: fila compacta */
+.action-section .btn-row {
+  display: grid !important;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 8px;
+}
+.action-section .control-btn {
+  width:100%;
+  height: 40px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* Colores de acción */
+.action-section .control-btn[data-action="FOLD"]     { background: var(--move-fold);     color:#000; }
+.action-section .control-btn[data-action="LIMP"]     { background: var(--move-limp);     color:#000; }
+.action-section .control-btn[data-action="OVERLIMP"] { background: var(--move-overlimp); color:#000; }
+.action-section .control-btn[data-action="CALL"]     { background: var(--move-call);     color:#000; }
+.action-section .control-btn[data-action="BET"]      { background: var(--move-bet);      color:#000; }
+.action-section .control-btn[data-action="OR"]       { background: var(--move-or);       color:#000; }
+.action-section .control-btn[data-action="ROL"]      { background: var(--move-rol);      color:#000; }
+.action-section .control-btn[data-action="3BET"]     { background: var(--move-3bet);     color:#000; }
+.action-section .control-btn[data-action="SQUEEZE"]  { background: var(--move-squeeze);  color:#000; }
+.action-section .control-btn[data-action="4BET"]     { background: var(--move-4bet);     color:#000; }
+.action-section .control-btn[data-action="5BETPLUS"] { background: var(--move-5betplus); color:#000; }
+/* ALLIN: fondo negro y rojo neón */
+.action-section .control-btn[data-action="ALLIN"]    { background: var(--move-allin);    color:#ff1744; }
+
+/* Ocultar BET (no se usa preflop) */
+.action-section .control-btn[data-action="BET"] { display:none !important; }
+
+/* 8.3 Números 2..A en una fila */
+.btn-grid.value-grid {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 4px;
+  width: 100%;
+  margin-top: 6px;
+}
+.btn-grid.value-grid .control-btn {
+  width:100%;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 0 14px;
+}
+
+/* 8.4 Filtros (Suited/Pair/Off/Full) */
+.filter-section .btn-row {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin-top: 10px;
+}
+.filter-section .control-btn,
+#full-range-toggle {
+  width:100%;
+  height: 40px;
+  font-size:12px;
+  font-weight:700;
+  border-radius:6px;
+}
+
+/* 8.5 Quiz buttons */
+.quiz-section .btn-row {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+.quiz-section .control-btn {
+  width:100%;
+  height: 40px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+/* ========================================================================== 
+   9) Especiales y utilidades
+   ========================================================================== */
+#full-range-toggle.active {
+  /* Ajuste de estilo para seguir la convención de botones: fondo negro, sin borde, texto verde */
+  background: #000 !important;
+  border: none !important;
+  color: var(--green-2) !important;
+}
+#eraser-button { color: var(--red-2); }
+#undo-button   { color: var(--yellow-1); }
+
+#math-overlay {
+  display:none;
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.5);
+  z-index:999;
+}
+
+/* Evita reposicionamientos inline viejos */
+#combo-counter[style] {
+  position: static !important;
+  left:auto !important; right:auto !important;
+  top:auto !important;  bottom:auto !important;
+}
+
+/* ==========================================================================
+   10) Responsive
+   ========================================================================== */
+@media (max-width: 620px) {
+  :root { --grid-width: 100%; --cell: 38px; --btn-h: 40px; --btn-fs: 12px; }
+  #quiz-info { margin-bottom: 2px; }
+  .action-section .btn-row { grid-template-columns: repeat(5, 1fr); row-gap: 8px; }
+  .filter-section .btn-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 420px) {
+  .filter-section .btn-row { grid-template-columns: 1fr; }
+  .btn-grid.value-grid    { grid-template-columns: repeat(7, 1fr); }
+}
+/* Oculta completamente botones de acción no disponibles en QUIZ */
+.action-hidden { display: none !important; }
+
+/*
+ * Visual styling for disabled configuration buttons during quiz.
+ * When quiz is active, configuration buttons (hero, villain, spot and filter controls)
+ * are dimmed and pointer events are disabled via JS. This CSS class
+ * complements that functionality by reducing opacity.
+ */
+.is-disabled {
+  opacity: 0.5;
+}
