@@ -549,3 +549,57 @@ body.invert-lock #range-table td.wrong::before { color: var(--color-bg); }
 .is-disabled {
   opacity: 0.5;
 }
+
+@media (max-width: 768px) {
+  body {
+    align-items: stretch;
+    padding: 8px 6px;
+  }
+  #main,
+  #grid-container,
+  #quiz-info,
+  #config-panel,
+  .btn-section {
+    width: 100%;
+  }
+  #grid-container {
+    align-items: stretch;
+  }
+  #quiz-info {
+    margin-left: 0;
+  }
+  #range-table {
+    width: 100%;
+    max-width: none;
+  }
+  .positions-3col {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .pos-center {
+    border-left: none;
+    border-right: none;
+    padding: 0;
+    justify-content: flex-start;
+  }
+  .move-section .btn-row {
+    grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+    grid-auto-rows: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 6px 4px;
+  }
+  .pos-col .btn-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .move-section .btn-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+  }
+  .move-section .vs-text {
+    grid-column: 1 / -1;
+  }
+}

@@ -193,6 +193,108 @@
   App.Rules = App.Rules || {};
 
   /**
+   * Obtiene una instantánea normalizada de las selecciones actuales
+   * (héroes, spots y relativos) independientemente del modo.
+   * Devuelve todos los valores en mayúsculas para facilitar
+   * comparaciones posteriores.
+   * @returns {{heroes:string[], spots:string[], heroEligible:boolean, heroSelected:boolean, orSelected:boolean, vs3Selected:boolean, mode:string, quizState:string|null}}
+   */
+  function computeSelectionSnapshot() {
+    const s = App.State.state;
+    const heroes = (s.heroes && s.heroes.size > 0)
+      ? Array.from(s.heroes)
+      : (s.hero ? [s.hero] : []);
+    const spots = (s.spots && s.spots.size > 0)
+      ? Array.from(s.spots)
+      : (s.spot ? [s.spot] : []);
+    const heroUp = heroes
+      .map(h => (h ? String(h).toUpperCase() : null))
+      .filter(Boolean);
+    const spotUp = spots
+      .map(sp => (sp ? String(sp).toUpperCase() : null))
+      .filter(Boolean);
+    const heroSelected = heroUp.length > 0;
+    const heroEligible = heroUp.some(h => h !== 'BB');
+    const orSelected = spotUp.includes('OR');
+    const vs3Selected = spotUp.includes('VS3BET');
+    const mode = s.mode;
+    const quizState = s.quiz ? s.quiz.state : null;
+    return { heroes: heroUp, spots: spotUp, heroEligible, heroSelected, orSelected, vs3Selected, mode, quizState };
+  }
+
+  /**
+   * Determina si estamos en la pantalla de configuración del quiz.
+   * @param {string} mode
+   * @param {string|null} quizState
+   * @returns {boolean}
+   */
+  function isQuizConfig(mode, quizState) {
+    return mode === 'QUIZ' && quizState === 'config';
+  }
+
+  /**
+   * Sincroniza el flujo OR → 3B → IP/OOP asegurando que estado y
+   * selecciones se mantengan coherentes entre modo normal y modo quiz.
+   * Devuelve una nueva instantánea tras aplicar los ajustes.
+   * @returns {ReturnType<typeof computeSelectionSnapshot>}
+   */
+  function syncControlFlow() {
+    const s = App.State.state;
+    let snap = computeSelectionSnapshot();
+    const inQuizConfig = isQuizConfig(snap.mode, snap.quizState);
+
+    if (!snap.heroSelected || !snap.heroEligible) {
+      // Sin héroe elegible: reiniciar flujo completo.
+      s.hasClickedOr = false;
+      if (snap.mode === 'VISUALIZER') {
+        s.spot = null;
+      } else if (inQuizConfig && s.spots && typeof s.spots.delete === 'function') {
+        s.spots.delete('OR');
+        s.spots.delete('VS3BET');
+      }
+      s.relative = null;
+      if (inQuizConfig && s.relatives && typeof s.relatives.clear === 'function') {
+        s.relatives.clear();
+      }
+      return computeSelectionSnapshot();
+    }
+
+    // Si no hay OR ni 3B seleccionados y no se ha pulsado OR todavía,
+    // garantizar que 3B quede deseleccionado.
+    if (!snap.orSelected && !snap.vs3Selected && !s.hasClickedOr) {
+      if (snap.mode === 'VISUALIZER') {
+        s.spot = null;
+      } else if (inQuizConfig && s.spots && typeof s.spots.delete === 'function') {
+        s.spots.delete('VS3BET');
+      }
+      s.relative = null;
+      if (inQuizConfig && s.relatives && typeof s.relatives.clear === 'function') {
+        s.relatives.clear();
+      }
+    }
+
+    // Si 3B no está activo, vaciar relativos para evitar selecciones
+    // fantasma que se repliquen al volver a activar 3B.
+    if (!snap.vs3Selected) {
+      s.relative = null;
+      if (inQuizConfig && s.relatives && typeof s.relatives.clear === 'function') {
+        s.relatives.clear();
+      }
+    }
+
+    // Si actualmente hay OR o 3B seleccionados, marcar el paso como
+    // completado. Esto mantiene habilitado 3B incluso cuando se alterna
+    // entre OR y VS3BET.
+    if (snap.orSelected || snap.vs3Selected) {
+      s.hasClickedOr = true;
+    } else if (!snap.heroEligible) {
+      s.hasClickedOr = false;
+    }
+
+    return computeSelectionSnapshot();
+  }
+
+  /**
    * Habilita o deshabilita los botones de filtros de rango según
    * el contexto actual. No aplica filtros durante el quiz activo.
    */
@@ -762,118 +864,96 @@
     const s = App.State.state;
     const r = App.Dom.refs;
     if (!r || !r.moveButtons) return;
+    const snapshot = syncControlFlow();
     const orBtn  = r.moveButtons.find(b => (b.dataset.filter || '').toUpperCase() === 'OR');
     const vs3Btn = r.moveButtons.find(b => (b.dataset.filter || '').toUpperCase() === 'VS3BET');
     const vs5Btn = r.moveButtons.find(b => (b.dataset.filter || '').toUpperCase() === 'VS5BET');
-    if (s.mode === 'VISUALIZER') {
-      // Configurar OR
+    const heroEligible = snapshot.heroEligible;
+    const heroSelected = snapshot.heroSelected;
+    const orSelected = snapshot.orSelected;
+    const vs3Selected = snapshot.vs3Selected;
+    const orUnlocked = heroEligible && s.hasClickedOr;
+    const inQuizConfig = isQuizConfig(snapshot.mode, snapshot.quizState);
+
+    if (snapshot.mode === 'VISUALIZER') {
       if (orBtn) {
-        // Reset classes
         orBtn.classList.remove('active', 'off', 'disabled');
-        if (!s.hero) {
-          // Deshabilitado hasta seleccionar héroe
+        if (!heroSelected || !heroEligible) {
           orBtn.disabled = true;
           orBtn.classList.add('disabled');
         } else {
-          // Habilitado
           orBtn.disabled = false;
-          if (s.spot === 'OR' || (s.spot === 'VS3BET' || s.spot === 'VS5BET')) {
-            // OR debe permanecer activo si ya se seleccionó OR o VS3BET/VS5BET
+          if (orSelected || vs3Selected) {
             orBtn.classList.add('active');
           } else {
             orBtn.classList.add('off');
           }
         }
       }
-      // Configurar VS3BET
-      const canVs = !!s.hero && s.hasClickedOr;
       if (vs3Btn) {
         vs3Btn.classList.remove('active', 'off', 'disabled');
-        if (!canVs) {
+        if (!orUnlocked) {
           vs3Btn.disabled = true;
           vs3Btn.classList.add('disabled');
-          if (s.spot === 'VS3BET') {
-            s.spot = null;
-            s.relative = null;
-            r.relativeButtons.forEach(b => {
-              b.disabled = true;
-              b.classList.add('disabled');
-              b.classList.remove('active', 'off');
-            });
-          }
         } else {
           vs3Btn.disabled = false;
-          if (s.spot === 'VS3BET') {
+          if (vs3Selected) {
             vs3Btn.classList.add('active');
           } else {
             vs3Btn.classList.add('off');
           }
         }
       }
-      // Configurar VS5BET (no datos: siempre deshabilitado)
       if (vs5Btn) {
         vs5Btn.classList.remove('active', 'off', 'disabled');
         vs5Btn.disabled = true;
         vs5Btn.classList.add('disabled');
-        if (s.spot === 'VS5BET') {
-          s.spot = null;
-          s.relative = null;
-          r.relativeButtons.forEach(b => {
-            b.disabled = true;
-            b.classList.add('disabled');
-            b.classList.remove('active', 'off');
-          });
-        }
       }
-      // Ajustar disponibilidad de relativos para VS3BET cuando aplique
       autoSelectRelativeForVs3bet();
       applyFilterAvailability();
       return;
     }
-    if (s.mode === 'QUIZ' && s.quiz.state === 'config') {
-      // OR button in quiz config
+
+    if (inQuizConfig) {
       if (orBtn) {
         orBtn.classList.remove('active', 'off', 'disabled');
-        if (s.heroes.size === 0) {
+        if (!heroSelected || !heroEligible) {
           orBtn.disabled = true;
           orBtn.classList.add('disabled');
-          if (s.spots.has('OR')) s.spots.delete('OR');
         } else {
           orBtn.disabled = false;
-          if (s.spots.has('OR') || s.spots.has('VS3BET') || s.spots.has('VS5BET')) {
+          if (orSelected || vs3Selected) {
             orBtn.classList.add('active');
           } else {
             orBtn.classList.add('off');
           }
         }
       }
-      // En modo Quiz/config se permite seleccionar VS3BET/VS5BET con sólo tener héroes seleccionados;
-      // no se requiere haber hecho clic en OR previamente. Esto simplifica la práctica contra 3bet.
-      const canVsQuiz = s.heroes.size > 0;
-      // VS3BET in quiz config
       if (vs3Btn) {
         vs3Btn.classList.remove('active', 'off', 'disabled');
-        if (!canVsQuiz) {
+        if (!orUnlocked) {
           vs3Btn.disabled = true;
           vs3Btn.classList.add('disabled');
-          if (s.spots.has('VS3BET')) s.spots.delete('VS3BET');
+          if (s.spots && typeof s.spots.delete === 'function') {
+            s.spots.delete('VS3BET');
+          }
         } else {
           vs3Btn.disabled = false;
-          if (s.spots.has('VS3BET')) {
+          if (vs3Selected) {
             vs3Btn.classList.add('active');
           } else {
             vs3Btn.classList.add('off');
           }
         }
       }
-      // VS5BET in quiz config (sin datos -> deshabilitado)
       if (vs5Btn) {
         vs5Btn.classList.remove('active', 'off', 'disabled');
         vs5Btn.disabled = true;
         vs5Btn.classList.add('disabled');
-        if (s.spots.has('VS5BET')) s.spots.delete('VS5BET');
+        if (s.spots && typeof s.spots.delete === 'function') {
+          s.spots.delete('VS5BET');
+        }
       }
-      // Tras actualizar los botones de movimiento, ajustar relativos para VS3BET
       autoSelectRelativeForVs3bet();
     }
   }
@@ -888,6 +968,7 @@
     const s = App.State.state;
     const r = App.Dom.refs;
     if (!r || !r.heroButtons) return;
+    syncControlFlow();
     if (s.mode === 'VISUALIZER') {
       const hero = s.hero;
       const villain = s.villain;
@@ -1097,13 +1178,42 @@
         setTimeout(() => App.Paint.refreshGrid(), 300);
         return;
       }
+      const brushTag = s.brush ? String(s.brush).toUpperCase() : null;
+      if (!brushTag) return;
+      const q = s.quiz.currentQuestion || {};
+      const allowedSet = new Set();
+      if (q && Array.isArray(q.allowedMoves)) {
+        q.allowedMoves.forEach(mv => {
+          if (mv) allowedSet.add(String(mv).toUpperCase());
+        });
+      }
+      const expectedMap = s.quiz.expectedMoveByCombo || {};
+      const expected = expectedMap ? expectedMap[combo] : undefined;
+      let validBrush = false;
+      if (typeof expected === 'string' && expected) {
+        validBrush = brushTag === String(expected).toUpperCase();
+      } else if (expected === null) {
+        validBrush = allowedSet.size === 0 || allowedSet.has(brushTag);
+      } else {
+        validBrush = allowedSet.size === 0 || allowedSet.has(brushTag);
+      }
+      if (!validBrush) {
+        td.style.transition = 'background-color 0.2s';
+        td.style.backgroundColor = '#640404';
+        setTimeout(() => App.Paint.refreshGrid(), 300);
+        return;
+      }
       s.undoStack.push(JSON.parse(JSON.stringify(s.userPaint)));
       const existing = s.userPaint[combo];
-      if (existing && existing[s.brush] === 100) {
+      const existingKey = existing ? Object.keys(existing)[0] : null;
+      const existingTag = existingKey ? String(existingKey).toUpperCase() : null;
+      if (existing && existingTag === brushTag && existing[existingKey] === 100) {
         delete s.userPaint[combo];
+        if (s.quiz.correctSet) s.quiz.correctSet.delete(combo);
       } else {
         s.userPaint[combo] = {};
-        s.userPaint[combo][s.brush] = 100;
+        s.userPaint[combo][brushTag] = 100;
+        if (s.quiz.correctSet) s.quiz.correctSet.add(combo);
       }
       App.Paint.refreshGrid();
       App.Paint.updateComboCounters();
@@ -1150,5 +1260,6 @@
   App.Rules.updateMoveButtons = updateMoveButtons;
   App.Rules.updateHeroVillainButtons = updateHeroVillainButtons;
   App.Rules.handleQuizCellClick = handleQuizCellClick;
+  App.Rules.syncControlFlow = syncControlFlow;
 
 })(typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : (typeof global !== 'undefined' ? global : {})));
