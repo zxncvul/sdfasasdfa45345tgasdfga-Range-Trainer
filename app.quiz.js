@@ -1428,11 +1428,15 @@ if (q && q.kind === 'FULLRANGE') {
             s.hero = null;
             s.spot = null;
             s.relative = null;
+            s.hasClickedOr = false;
           } else {
             s.hero = pos;
             if (s.villain === pos) s.villain = null;
             s.relative = null;
+            s.spot = null;
+            s.hasClickedOr = false;
           }
+          if (App.Rules && typeof App.Rules.syncControlFlow === 'function') App.Rules.syncControlFlow();
           App.Rules.updateHeroVillainButtons();
           App.Rules.updateMoveButtons();
           App.Rules.updateActionButtons();
@@ -1444,6 +1448,7 @@ if (q && q.kind === 'FULLRANGE') {
         } else if (s.mode === 'QUIZ' && s.quiz.state === 'config') {
           if (s.heroes.has(pos)) s.heroes.delete(pos);
           else s.heroes.add(pos);
+          if (App.Rules && typeof App.Rules.syncControlFlow === 'function') App.Rules.syncControlFlow();
           App.Rules.updateHeroVillainButtons();
           // Actualizar filtros y contador
           updateFilterButtonClasses();
@@ -1492,6 +1497,7 @@ if (q && q.kind === 'FULLRANGE') {
             } else {
               s.relative = rel;
             }
+            if (App.Rules && typeof App.Rules.syncControlFlow === 'function') App.Rules.syncControlFlow();
             App.Rules.updateHeroVillainButtons();
             App.Rules.updateMoveButtons();
             App.Rules.updateActionButtons();
@@ -1501,6 +1507,7 @@ if (q && q.kind === 'FULLRANGE') {
           } else if (s.mode === 'QUIZ' && s.quiz.state === 'config') {
             if (s.relatives.has(rel)) s.relatives.delete(rel);
             else s.relatives.add(rel);
+            if (App.Rules && typeof App.Rules.syncControlFlow === 'function') App.Rules.syncControlFlow();
             App.Rules.updateHeroVillainButtons();
             updateFilterButtonClasses();
             updateQuestionCounter();
@@ -1514,29 +1521,38 @@ if (q && q.kind === 'FULLRANGE') {
         const move = (btn.dataset.filter || '').toUpperCase();
         if (s.mode === 'VISUALIZER') {
           if (move === 'OR') {
-            if (!s.hero) return;
+            const heroUp = s.hero ? String(s.hero).toUpperCase() : null;
+            if (!heroUp || heroUp === 'BB') return;
             if (s.spot === 'OR') {
               s.spot = null;
               s.relative = null;
               s.hasClickedOr = false;
+            } else if (s.spot === 'VS3BET') {
+              s.spot = 'OR';
+              s.relative = null;
+              s.hasClickedOr = true;
             } else {
               s.spot = 'OR';
               s.relative = null;
               s.hasClickedOr = true;
             }
           } else if (move === 'VS3BET') {
-            if (!s.hero || !s.hasClickedOr) return;
+            const heroUp = s.hero ? String(s.hero).toUpperCase() : null;
+            if (!heroUp || heroUp === 'BB') return;
+            if (!s.hasClickedOr) return;
             if (s.spot === 'VS3BET') {
-              s.spot = null;
+              s.spot = 'OR';
               s.relative = null;
             } else {
               s.spot = 'VS3BET';
+              s.hasClickedOr = true;
               // relative se seleccionará vía botones
             }
           } else if (move === 'VS5BET') {
             // Sin datos; ignorar
             return;
           }
+          if (App.Rules && typeof App.Rules.syncControlFlow === 'function') App.Rules.syncControlFlow();
           App.Rules.updateHeroVillainButtons();
           App.Rules.updateMoveButtons();
           App.Rules.updateActionButtons();
@@ -1547,29 +1563,34 @@ if (q && q.kind === 'FULLRANGE') {
           updateFilterButtonClasses();
         } else if (s.mode === 'QUIZ' && s.quiz.state === 'config') {
           if (move === 'OR') {
+            const heroList = (s.heroes && s.heroes.size > 0) ? Array.from(s.heroes) : [];
+            const heroEligible = heroList.some(h => h && String(h).toUpperCase() !== 'BB');
+            if (!heroEligible) return;
             if (s.spots.has('OR')) {
               s.spots.delete('OR');
+              s.hasClickedOr = false;
+              if (s.spots.has('VS3BET')) s.spots.delete('VS3BET');
+              if (s.relatives && typeof s.relatives.clear === 'function') s.relatives.clear();
+              s.relative = null;
             } else {
-              // Al activar OR, desactivar VS3BET y VS5BET para que la selección sea exclusiva
               s.spots.add('OR');
               s.hasClickedOr = true;
-              if (s.spots.has('VS3BET')) s.spots.delete('VS3BET');
-              if (s.spots.has('VS5BET')) s.spots.delete('VS5BET');
             }
           } else if (move === 'VS3BET') {
-            // Al seleccionar VS3BET en configuración del quiz, activar sólo esta opción.
-            // Si se añade VS3BET, eliminar OR para evitar que se generen consignas de OR.
+            if (!s.hasClickedOr) return;
             if (s.spots.has('VS3BET')) {
               s.spots.delete('VS3BET');
+              if (s.relatives && typeof s.relatives.clear === 'function') s.relatives.clear();
+              s.relative = null;
             } else {
               s.spots.add('VS3BET');
-              // quitar OR si estaba seleccionada para que VS3BET sea exclusivo
-              if (s.spots.has('OR')) s.spots.delete('OR');
+              s.hasClickedOr = true;
             }
           } else if (move === 'VS5BET') {
             // no hay datos, no permitir
             return;
           }
+          if (App.Rules && typeof App.Rules.syncControlFlow === 'function') App.Rules.syncControlFlow();
           App.Rules.updateHeroVillainButtons();
           App.Rules.updateMoveButtons();
           App.Rules.updateActionButtons();
@@ -1837,7 +1858,17 @@ function buildFreebetPool() {
   // Determinar spots seleccionados (OR, VS3BET, VS5BET...). Mantener el orden de inserción
   // porque el usuario suele seleccionar primero OR y luego VS3BET. Si no hay spots múltiples,
   // tomar state.spot como único.
-  const spots = (s.spots && s.spots.size > 0) ? Array.from(s.spots) : (s.spot ? [s.spot] : []);
+  const spots = (() => {
+    const raw = (s.spots && s.spots.size > 0) ? Array.from(s.spots) : (s.spot ? [s.spot] : []);
+    const canonical = raw.map(sp => String(sp).toUpperCase());
+    const order = ['OR', 'VS3BET', 'VS5BET'];
+    canonical.sort((a, b) => {
+      const ia = order.indexOf(a);
+      const ib = order.indexOf(b);
+      return (ia === -1 ? Number.MAX_SAFE_INTEGER : ia) - (ib === -1 ? Number.MAX_SAFE_INTEGER : ib);
+    });
+    return canonical;
+  })();
   // Determinar relativos según prioridades: explicitados en s.relatives > s.relative > autoguess
   let relatives = [];
   if (s.relatives && s.relatives.size > 0) {

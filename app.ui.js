@@ -297,9 +297,34 @@
     const targets = s.fullRange.targets;
     let ok = 0;
     let extras = 0;
+    const expectedMap = s.quiz.expectedMoveByCombo || {};
+    const q = s.quiz.currentQuestion || {};
+    const allowedSet = new Set();
+    if (q && Array.isArray(q.allowedMoves)) {
+      q.allowedMoves.forEach(mv => {
+        if (mv) allowedSet.add(String(mv).toUpperCase());
+      });
+    }
     Object.keys(s.userPaint).forEach(c => {
-      if (targets.includes(c)) ok++;
-      else extras++;
+      const paint = s.userPaint[c];
+      const key = paint ? Object.keys(paint)[0] : null;
+      const moveTag = key ? String(key).toUpperCase() : null;
+      if (!moveTag) return;
+      if (targets.includes(c)) {
+        const expected = expectedMap ? expectedMap[c] : undefined;
+        let valid = false;
+        if (typeof expected === 'string' && expected) {
+          valid = moveTag === String(expected).toUpperCase();
+        } else if (expected === null) {
+          valid = allowedSet.size === 0 || allowedSet.has(moveTag);
+        } else {
+          valid = allowedSet.size === 0 || allowedSet.has(moveTag);
+        }
+        if (valid) ok++;
+        else extras++;
+      } else {
+        extras++;
+      }
     });
     s.fullRange.ok = ok;
     s.fullRange.extras = extras;
