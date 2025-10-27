@@ -523,6 +523,34 @@ if (q && q.kind === 'FULLRANGE' && Array.isArray(q.allowedMoves)) {
   }
 
   /**
+   * Limpia los filtros activos antes de iniciar o reiniciar el quiz.
+   * Durante la configuración se permite usar el teclado numérico y los
+   * filtros de suits para acotar el conjunto de preguntas, pero una vez
+   * comenzada la tanda deben mostrarse todas las columnas del teclado para
+   * evitar que queden ocultas por selecciones previas.
+   */
+  function resetRuntimeFilters() {
+    const s = App.State.state;
+    if (!s || !s.filters) return;
+    try {
+      if (s.filters.ranks && typeof s.filters.ranks.clear === 'function') {
+        s.filters.ranks.clear();
+      }
+      s.filters.suited = false;
+      s.filters.offsuited = false;
+      s.filters.pair = false;
+      if (App.Rules && typeof App.Rules.applyFilterAvailability === 'function') {
+        App.Rules.applyFilterAvailability();
+      }
+      updateFilterButtonClasses();
+    } catch (err) {
+      if (typeof console !== 'undefined' && console.warn) {
+        console.warn('resetRuntimeFilters failed:', err);
+      }
+    }
+  }
+
+  /**
    * Calcula y actualiza el contador de preguntas disponibles en el panel superior
    * durante la configuración del quiz. Considera si Full Range está activado y
    * utiliza el dataset para contar preguntas filtradas. El texto resultante
@@ -998,6 +1026,7 @@ if (q && q.kind === 'FULLRANGE') {
     // Limpiar pintura y pincel
     App.State.resetUserPaint();
     s.brush = null;
+    resetRuntimeFilters();
     App.Rules.updateActionButtons();
     App.Rules.applyActionAvailability();
     App.Paint.resetQuizToggleToQuestion();
@@ -1048,6 +1077,8 @@ if (q && q.kind === 'FULLRANGE') {
     // Reiniciar pincel y pintura
     App.State.resetUserPaint();
     s.brush = null;
+    // Limpiar filtros usados durante la configuración para restaurar el teclado numérico completo
+    resetRuntimeFilters();
     // Actualizar interfaz
     App.Paint.resetQuizToggleToQuestion();
     updateProgressIndicator();
@@ -1160,6 +1191,7 @@ if (q && q.kind === 'FULLRANGE') {
     // Limpiar pintura y pincel
     App.State.resetUserPaint();
     s.brush = null;
+    resetRuntimeFilters();
     // Actualizar interfaz
     App.Paint.resetQuizToggleToQuestion();
     updateProgressIndicator();
